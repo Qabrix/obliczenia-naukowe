@@ -1,0 +1,158 @@
+\documentclass{article}
+
+\usepackage{polski}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{algorithm2e}
+
+\SetKwInput{KwData}{Dane}
+\SetKwInput{KwResult}{Wynik}
+
+\author{Paweł Wilkosz}
+\title{Obliczenia naukowe - sprawozdanie 3.}
+
+\begin{document}
+\maketitle
+
+\section{Opis problemu}
+
+Celem zadania jest znalezienie miejsc zerowych funkcji $f: \mathbb{R} \to \mathbb{R}$ przy wykorzystaniu algorytmów iteracyjnych.
+Dla każdego algorytmu definiujemy dwa parametry precyzji.
+\begin{itemize}
+  \item $\epsilon$ - precyzja wartości funkcji
+  \item $\delta$ - precyzja argumentów funkcji
+\end{itemize}
+
+\section{Algorytmy}
+
+\subsection{Metoda bisekcji}
+Metoda ta wymaga podania przedziału $[a,b]$, na którym dana funkcja $f$ zmienia znak.
+Iteracja metody polega na dzieleniu przedziału na dwie części i wybrania do kolejnej iteracji tej, na której funkcja zmienia znak.
+Algorytm kończy działanie gdy długość przedziału jest mniejsza niż dane $\delta$ lub wartość funkcji dla początku przedziału jest mniejsza niż $\epsilon$.
+
+\begin{algorithm}[H]
+  \KwData{f, a, b, $\delta$, $\epsilon$}
+  \KwResult{r, f(r), it, error}
+
+  u $\leftarrow$ f(a)
+  v $\leftarrow$ f(b)
+  e $\leftarrow$ b-a
+
+  \If{sgn(u) == sgn(v)}{
+    return (0, 0, 0, 1)
+  }
+
+  it $\leftarrow$ 1
+
+  \While{true}{
+    e $\leftarrow$ e/2;
+    c $\leftarrow$ a+e;
+    w $\leftarrow$ f(c);
+
+    \If{$abs(e) < \delta$ or $|w| < \epsilon$}{
+      return (c, w, it, 0)
+    }
+
+    \eIf{sgn(w) != sgn(u)}{
+      b $\leftarrow$ c
+      v $\leftarrow$ w
+    }{
+      a $\leftarrow$ c
+      u $\leftarrow$ w
+    }
+
+    it++
+  }
+\end{algorithm}
+
+
+\subsection{Metoda Newtona}
+
+W tej metodzie potrzebna jest nam pochodna funkcji oraz wartość początkowa $x_0$.
+W każdej kolejnej iteracji algorytmu przy pomocy danej pochodnej wyznaczamy styczną do funkcji w punkcie $x_0$.
+Następnie badamy wartość funkcji w punkcie przecięcia z osią X - $x_1$
+Jeżeli wartość funkcji w tym punkcie nie jest odpowiednio bliska zeru podstawiamy $x_0 = x_1$ i kontunuujemy algorytm.
+W przeciwnym wypadku zwracamy znalezioną wartość.
+
+Algorytm działa błędnie w dwóch przypadkach: gdy wartość pochodna będzie bliska zeru lub jeżeli nie znajdziemy odpowiedniej wartości w \texttt{maxit} iteracjach.
+
+\begin{algorithm}[H]
+  \KwData{f, $f'$ x0, $\delta$, $\epsilon$, maxit}
+  \KwResult{r, f(r), it, error}
+
+  v $\leftarrow$ f(x0)
+
+  \If{$abs(v) < \epsilon$}{
+    return (x0, v, 0, 0)
+  }
+
+  \For{it $\leftarrow$ 1 \KwTo maxit}{
+    \If{$abs(f'(x0)) < \epsilon$}{
+      return (0, 0, it, 2)
+    }
+    x1 $\leftarrow$ x0 - v/$f'$(x0);
+    v $\leftarrow$ f(x1)
+
+    \If{$abs(x1-x0) < \delta$ or $abs(v) < epsilon$}{
+      return (x1, v, it, 0)
+    }
+
+    x0 $\leftarrow$ x1
+  }
+
+  return (0, 0, 0, 1)
+
+\end{algorithm}
+
+\subsection{Metoda siecznych}
+
+Ta metoda polega na wyznaczeniu ciągu punktów zbieżnego do miejsca zerowego definiowanego za pomocą wzoru
+$$
+x_{n+2} = \text{punkt przecięcia z osią OX siecznej przecinającej funkcję w punktach } x_n \text{ i } x_{n+1}
+$$
+
+Program kończy prace gdy odległość pomiędzy kolejnymi punktami ciągu bedzie mniejsza niż $\delta$ lub wartość funkcji bedzie mniejsza niż $\epsilon$.
+
+Algorytm może skończyć się błędem gdy odpowiednia wartość nie zostanie znaleziona w \texttt{maxit} iteracjach.
+
+\begin{algorithm}[H]
+  \KwData{f, x0, x1, $\delta$, $\epsilon$, maxit}
+  \KwResult{r, f(r), it, error}
+
+  a $\leftarrow$ x0;
+  b $\leftarrow$ x1;
+  fa $\leftarrow$ f(a);
+  fb $\leftarrow$ f(b);
+
+  \For{it $\leftarrow$ 1 \KwTo maxit}{
+    \If{$abs(fa) > abs(fb)$}{
+      a $\leftrightarrow$ b;
+      fa $\leftrightarrow$ fb
+    }
+
+    s $\leftarrow$ (b-a) / (fb-fa)
+
+    b $\leftarrow$ a;
+    fb $\leftarrow$ fa
+
+    a $\leftarrow$ a - fa*s
+    
+    fa $\leftarrow$ f(a)
+
+    \If{$abs(b-a) < \delta$ or $abs(fa) < epsilon$}{
+      return (a, fa, it, 0)
+    }
+  }
+
+  return (0, 0, 0, 1)
+  
+
+\end{algorithm}
+
+\section{Przykłady}
+
+\section{Wnioski}
+
+
+
+\end{document}

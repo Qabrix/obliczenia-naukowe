@@ -5,7 +5,7 @@ using .MiejscaZerowe
 f1(x::Float64) = exp(1-x)
 f1p(x::Float64) = -exp(1-x)
 f2(x::Float64) = x*exp(-x)
-f2p(x::Float64) = (x-1)*exp(-x)
+f2p(x::Float64) = -(x-1)*exp(-x)
 
 epsilon = 10^(-5)
 delta = 10^(-5)
