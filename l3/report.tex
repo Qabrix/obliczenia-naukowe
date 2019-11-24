@@ -151,7 +151,121 @@ Algorytm może skończyć się błędem gdy odpowiednia wartość nie zostanie z
 
 \section{Przykłady}
 
+\subsection{Zadanie 4}
+
+Celem zadania było przetestowanie powyższych metod dla równania
+$\sin x - (\frac{1}{2}x)^2 = 0$
+
+Dane wejściowe dla poszczególnych metod to
+\begin{itemize}
+  \item metoda bisekcji - przedział początkowy $[1.5, 2.0]$,
+  \item metoda Newtona - przybliżenie początkowe $x_0 = 1.5$,  
+  \item metoda siecznych - przybliżenia początkowe $x_0 = 1.0, x_1 = 2.0$
+\end{itemize}
+Dla wszystkich metod zastosowano parametry dokładności $\delta = \frac{1}{2}10^{-5}$ oraz $\epsilon = \frac{1}{2}10^{-5}$.
+
+Wyniki eksperymentu są przedstawione w poniższej tabeli.
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+metoda & $x$ & $f(x)$ & liczba iteracji \\
+\hline
+bisekcji &  1.9337539672851562   &    -2.7027680138402843e-7 & 16 \\
+Newtona & 1.933753779789742  & -2.2423316314856834e-8 & 4  \\
+siecznych & 1.933753644474301 & 1.564525129449379e-7 & 4 \\
+\hline
+\end{tabular}
+
+Można zaobserwować, że metoda Newtona osiągnęła najdokładniejszy wynik, a metoda bisekcji wymagała znacznie większej liczby iteracji niż pozostałe algorytmy.
+
+\subsection{Zadanie 5}
+
+Celem zadania było użycie metody bisekcji do znalezienie punktu przecięcia funkcji $f(x) = e^x$ i $g(x) = 3x$ przy dokładności $\delta = 10^{-4}$ i $\epsilon = 10^{-4}$.
+
+W celu dobrania odpowiednich przedziałów nalezy dokonać wstępnej analizy problemu.
+
+Łatwo zauważyć, że dla $x < 0$ funkcje te nie przecinają się, ponieważ $g$ na osiąga wartości ujemne podczas gdy $f$ jest zawsze dodatnie.
+Możemy też zaobserwować, że $f(0) = 1 > 0 = g(0)$ i $f(1) = e < 3 = g(1)$
+Zatem jako pierwszy przeszukiwany przedział wybieramy $[0,1]$.
+Z racji na wyższe tempo wzrostu funkcji wykładniczej, funkcje powinny się przeciąć kolejny raz dla $x>1$.
+W związku z tym przeszukujemy również przedział $[1,10]$.
+
+Wyniki eksperymentów przedstawione są w poniższej tabeli.
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+przedział & $x$ & $f(x)$ & liczba iteracji \\
+\hline
+$[0,1]$ & 0.619140625 & 9.066320343276146e-5 & 9 \\
+$[1,10]$ & 1.5121002197265625 & 5.274503124397256e-5 & 16 \\
+\hline
+\end{tabular}
+
+Jak widać, wstępna analiza była poprawna i w podanych przedziałach udało się znaleźć miejsca zerowe.
+Rozległość drugiego przedziału zwiększyła jednak potrzebną liczbę iteracji.
+
+\subsection{Zadanie 6}
+
+Zadanie polegało na użyciu wszystkich zaimplementowanych metod do zbadania miejsc zerowych funkcji
+$
+f_1(x) = e^{1-x} - 1
+$
+i
+$
+f_2(x) = xe^{-x}
+$
+przy dokładności $\delta = 10^{-5}$ i $\epsilon = 10^{-5}$.
+
+W celu poprawnego zadania należy dokonać wstępnej analizy danych funkcji.
+Podstawienie przykładowych wartości do $f_1$ pozwala stwierdzić że jest to funkcja malejąca oraz dodatnia w zerze
+Na tej podstawie, dla metody bisekcji użyjemy przedziału $[0,10]$, dla metody Newtona za punkt startowy wybierzemy $0$, a dla metody siecznych jako wartości startowych użyjemy $0$ i $0.1$.
+Wyniki powyższego eksperymentu widoczne są w poniższej tabeli.
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+metoda    & $x$                & $f(x)$                & liczba iteracji \\ \hline
+bisekcji  & 1.0000038146972656 & -3.814689989667386e-6 & 19              \\ \hline
+Newtona   & 0.9999984358892101 & 1.5641120130194253e-6 & 4               \\ \hline
+siecznych & 0.9999999935791432 & 6.420856957234378e-9  & 6               \\ \hline
+\end{tabular}
+
+Jak widać, wszystkie metody zwróciły wynik bliski poprawnemu ($1$), jednak najlepszy wynik osiągnęła metoda siecznych.
+
+Wstępna analiza dla $f_2$ pozwala znaleźć trywialny pierwiastek równy $0$.
+Dla metody bisekcji wybieramy zatem przedział $[-1,1]$, dla metody Newtona wybieramy wartość startową $-1$, a jako wartości początkowe dla metody siecznych obieramy $-1$ i $-0.5$.
+Wyniki tych testów widoczne są w poniższej tabeli.
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+metoda    & $x$                    & $f(x)$                 & liczba iteracji \\ \hline
+bisekcji  & 0.0                    & 0,0                    & 1               \\ \hline
+Newtona   & -3.0642493416461764e-7 & -3.0642502806087233e-7 & 5               \\ \hline
+siecznych & -3.304447675535891e-8  & -3.304447784729637e-8  & 7               \\ \hline
+\end{tabular}
+
+Jak widać dobranie przedziału, symetrycznego wokół miejsca zerowego mocno faworyzuje metodę bisekcji.
+Po raz kolejny metoda siecznych okazuje się dokładniejsza od metody Newtona.
+
+Kolejny eksperyment polega na uźyciu $x_0>1$ w metodzie Newtona dla obu funkcji oraz $x_0=1$ dla $f_2$.
+Jako przykładowej wartości $x_0>1$ użyjemy liczby $50$.
+
+Uruchomienie funkcji z powyższymi parametrami powoduje błąd zbyt małej pochodnej dla $x_0>1$ dla $f_1$ i $x_0=1$ dla $f_2$.
+Jest to spowodowane niskim tempem wzrostu funkcji dla tych wartości.
+Użycie duzego $x_0$ w metodzie Newtona dla $f_2$ powoduje zwrócenie fałszywego miejsca zerowego w wartości początkowej.
+Jest to spowodowane granicą funkcji $f_2$ w nieskończoności równą $0$.
+
 \section{Wnioski}
+
+Alorytmy numerycznego wyznaczania miejsc zerowych funkcji są trudne do sklasyfikowania.
+Ich dokładność oraz poprawność działania zależy od danego przypadku i wstępnej analizy problemu.
+
+Metoda bisekcji zdaje się być najbardziej niezawodna, jednak wymaga znalezienia odpowiedniego przedziału oraz kończy pracę po największej liczbie iteracji.
+Metoda siecznych zwraca najdokładniejsze wyniki, jednak wybranie odpowiednich wartości startowych wymaga odpowiedniej analizy.
+Również w przypadku metody Newtona wyniki są zależne od wartości poczatkowej i istnieją dane, dla których metoda może zwracać błędne wyniki.
+
+Powyższe algorytmy wykazują wysoką skuteczność w powierzonych zadaniach jednak istnieje duże ryzyko błędu.
+
+W krytycznych przypadkach konieczne jest dogłębna wstępna analiza problemu i porównanie wyniku działania wszystkich metod.
 
 
 
