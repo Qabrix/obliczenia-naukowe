@@ -5,7 +5,10 @@
 \usepackage{amsmath}
 \usepackage{mathtools}
 \usepackage{adjustbox}
+\usepackage{algorithm2e}
 \usepackage[margin=1in, bmargin=1in, tmargin=0.6in]{geometry}
+
+\SetAlgorithmName{Algorytm}{algorytm}{Algorytmy}
 
 \author{Paweł Wilkosz}
 \title{ON, lista 3 - sprawozdanie}
@@ -42,6 +45,26 @@ gdzie $j$ oznacza numer kolumny w macierzy.
 Każda kolejna wartość uaktualniana jest kolumnami, zaś wewnątrz każdej kolumny - z dołu do góry.
 Dzięki takiej kolejności obliczeń tablica $t$ zawiera w każdej chwili ilorazy, które będą potrzebne w kolejnych krokach algorytmu.
 
+\begin{algorithm}[h]
+\SetKwProg{Fn}{function}{}{}
+\SetKw{KwDownTo}{downto}
+\SetKwFunction{ir}{ilorazyRoznicowe}
+\SetKwFunction{len}{length}
+\Fn{\ir{$x$,$f$}}{
+  \For{$i \gets 1$ \KwTo \len{$f$}} {
+    $fx[i] \gets f[i]$\;
+  }
+  \For{$i \gets 1$ \KwTo \len{$f$}} {
+    \For{$j \gets$\len{$f$} \KwDownTo $i$} {
+      $fx[j] \gets \dfrac{fx[j]-fx[j-1]}{x[j] - x[j-i]}$\;
+
+    }
+  }
+  \KwRet $fx$\;
+}
+\caption{Algorytm obliczania ilorazów różnicowych}
+\end{algorithm}
+
 \subsection{Algorytm Hornera}
 
 Obliczenie ilorazów różnicowych pozwala nam wyznaczyć wilomian interpolacyjny Newtona zadany wzorem
@@ -63,6 +86,23 @@ $$
 
 Zależność ta pozwala wyznaczyć wartość wielomianu w punkcie w czasie liniowym.
 
+\begin{algorithm}[h]
+\SetKw{KwDownTo}{downto}
+\SetKwProg{Fun}{function}{}{}
+\SetKwFunction{LEN}{length}
+\SetKwFunction{F}{warNewton}
+
+\Fun{\F{$x$, $fx$, $t$}} {
+  $n \gets \LEN{fx}$\;
+  $nt \gets fx[n]$\;
+  \For{$i \gets n-1$ \KwDownTo $1$} {
+    $nt \gets fx[i] + (t - x[i]) \cdot nt$\; 		
+  }
+  \KwRet $nt$\;
+}
+\caption{Algorytm Hornera obliczający wartość wielomianu interpolacyjnego}
+\end{algorithm}		
+
 \subsection{Postać naturalna}
 Wielomianem stopnia $n$ zmiennej $x$ w postaci naturalnej jest wyrażenie postaci
 $$
@@ -74,6 +114,28 @@ W wielomianie interpolacyjnym $n$-tego stopnia współczynnik $a_n$ przy najwyż
 Z tego faktu wynika także, że  $w_n$ z uogólnionego algorytmu Hornera jest również równy $a_n$.
 Posiadając $a_n$ = $w_n$ w kolejnych krokach algorytmu tworzone są wartości $a_i$ bazujące na współczynnikach $a_{i+1}$.
 Aby znaleźć zależności między kolejnymi $a_i$ algorytm iteruje po wszystkich $w_i$ od $i$ równego $n$ do $0$, tak zmieniając tworzone współczynniki postaci naturalnej, żeby dla każdego $w_i$ doprowadzić w danym momencie do postaci naturalnej.
+
+
+\begin{algorithm}[h]
+\SetKw{KwDownTo}{downto}
+\SetKwProg{Fun}{function}{}{}
+\SetKwFunction{LEN}{length}
+\SetKwFunction{F}{naturalna}
+
+\Fun{\F{$x$, $fx$}} {
+  $n \gets \LEN{fx}$\;
+  $a[n] \gets fx[n]$\;
+  \For{$i \gets n-1$ \KwDownTo $0$} {
+    $a[i] \gets fx[i] - a[i+1] \times x[i]$\; 
+    \For{$j \gets i+1$ \KwDownTo $n-1$} {
+      $a[j] \gets a[j] - a[j+1] * x[i]$\; 	
+  }	
+  }
+  \KwRet $a$\;
+}
+
+\caption{Wyznaczanie postaci naturalnej wielomianu}
+\end{algorithm}	
 
 \subsection{Wykres funkcji i wielomianu interpolowanego}
 

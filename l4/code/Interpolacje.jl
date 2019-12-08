@@ -44,43 +44,43 @@ module Interpolacje
     end
 
     function rysujNnfx(f, a::Float64, b::Float64, n::Int, plotName="nnfx")
-        max_nodes = n + 1
-        x = zeros(max_nodes)
-        y = zeros(max_nodes)
-        f_x = zeros(max_nodes)
+        nodes = n + 1
+        x = zeros(nodes)
+        y = zeros(nodes)
+        f_x = zeros(nodes)
 
 
         h = (b - a) / n
-        kh = Float64(0.0)
+        arg = a
 
         mult = 20
 
-        plot_args = zeros(mult * max_nodes)
-        plot_val = zeros(mult * max_nodes)
-        plot_ip = zeros(mult * max_nodes)
+        plot_x = zeros(mult * nodes)
+        plot_f = zeros(mult * nodes)
+        plot_w = zeros(mult * nodes)
 
-        for i in 1:max_nodes
-            x[i] = a + kh
-            y[i] = f(x[i])
-            kh += h
+        for i in 1:nodes
+            x[i] = arg
+            y[i] = f(arg)
+            arg += h
         end
 
         f_x = ilorazyRoznicowe(x, y)
 
-        kh = Float64(0.0)
-        max_nodes *= mult
-        h = (b - a) / (max_nodes - 1)
+        arg = a
+        nodes *= mult
+        h = (b - a) / (nodes - 1)
 
-        for i in 1:max_nodes
-            plot_args[i] = a + kh
-            plot_ip[i] = warNewton(x, f_x, plot_args[i])
-            plot_val[i] = f(plot_args[i])
-            kh += h
+        for i in 1:nodes
+            plot_x[i] = arg
+            plot_w[i] = warNewton(x, f_x, arg)
+            plot_f[i] = f(arg)
+            arg += h
         end
 
         clf()
-        plot(plot_args, plot_val, label = "f(x)", linewidth = 2.5)
-        plot(plot_args, plot_ip, label = "w(x)", linewidth = 1.5)
+        plot(plot_x, plot_f, label = "f(x)", linewidth = 2.5)
+        plot(plot_x, plot_w, label = "w(x)", linewidth = 1.5)
         grid(true)
         legend(loc = 2, borderaxespad = 0)
         savefig("plots/$(plotName).png")
